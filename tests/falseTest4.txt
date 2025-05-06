@@ -1,0 +1,10 @@
+PROGRAM TEST1 ;
+
+PROCEDURE PROC1 (
+    :
+); 
+
+;
+BEGIN
+END ;
+
