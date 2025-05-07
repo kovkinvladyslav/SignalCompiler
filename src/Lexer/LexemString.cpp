@@ -1,4 +1,6 @@
 #include <Lexer/LexemString.h>
+#include <string>
+#include <algorithm>
 
 void LexemString::add(Lexem newLexem)
 {
@@ -31,4 +33,10 @@ void LexemString::Output()
 		}
 	}
 	
+}
+
+Lexem& LexemString::find(std::string name){
+	return *(std::find_if(lexemString.begin(), lexemString.end(), [&](Lexem& lexem){
+		return lexem.Lexem == name;
+	}));
 }

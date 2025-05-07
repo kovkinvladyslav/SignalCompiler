@@ -15,4 +15,5 @@ public:
 	const std::vector<Lexem>& get() const;
 	void clear();
 	void Output();
+	Lexem &find(std::string name);
 };
