@@ -45,3 +45,7 @@ void Tree::output_tree(){
     printf("\nTree:\n");
     output_tree_recursive(root);
 }
+
+Node *Tree::get_root(){
+    return root;
+}
