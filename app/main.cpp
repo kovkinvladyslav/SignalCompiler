@@ -2,7 +2,6 @@
 #include <fstream>
 #include <error.h>
 
-
 #include <Lexer/Lexer.h>
 #include <Lexer/Table.h>
 #include <Lexer/LexemString.h>

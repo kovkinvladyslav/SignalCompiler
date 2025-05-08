@@ -46,15 +46,19 @@ void Generator::generate_procedure(Node* node){
         procedure_names.insert(proc_identifier);
     }
     emit("; Start of Procedure declaration: " + proc_identifier);
-    generate_parameters_list(node->get_children()[2]);
+    auto parameters = node->get_children()[2];
+    generate_parameters_list(parameters);
     emit("; End of Procedure declaration: " + proc_identifier);
 }
 
 void Generator::generate_parameters_list(Node *node){
-    if(node->get_value() == "<empty>"){
+    if(node->get_children()[0]->get_value() == "<empty>"){
         return;
     }
     emit("; Start of parameters list");
+    std::vector<std::string> variables;
+    std::vector<std::string> types;
+
     generate_declarations_list(node->get_children()[1]);
 
 }

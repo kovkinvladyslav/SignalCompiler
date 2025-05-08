@@ -175,8 +175,10 @@ Node *Parser::declaration(){
     Node *declaration_node = new Node ("<declaration>");
     declaration_node->add_child(variable_identifier());
     SCN();
-    if(TS.code == tables.Delimiters.get(",")){
-        declaration_node->add_child(identifiers_list());
+    while(TS.code == tables.Delimiters.get(",")){
+        SCN();
+        declaration_node->add_child(variable_identifier());
+        SCN();
     }
     if(TS.code != tables.Delimiters.get(":")){
         errorLogger.logError("Parser", TS.nline, TS.ncol, "Expected ':' between variables identifiers and attributes");
@@ -188,8 +190,9 @@ Node *Parser::declaration(){
     SCN();
     declaration_node->add_child(attribute());
     SCN();
-    if(TS.code == tables.Delimiters.get(",")){
-        declaration_node->add_child(attributes_list());
+    while(TS.code != tables.Delimiters.get(";")){
+        declaration_node->add_child(attribute());
+        SCN();
     }
     if(TS.code != tables.Delimiters.get(";")){
         errorLogger.logError("Parser", TS.nline, TS.ncol, "Expected ';' in the end of declaration");
@@ -199,17 +202,6 @@ Node *Parser::declaration(){
         declaration_node->add_child(new Node (TS.Lexem));
     }
     return declaration_node;
-}
-
-Node *Parser::identifiers_list(){
-    Node *identifiers_list = new Node ("<identifiers-list>");
-    while(TS.code == tables.Delimiters.get(",")){
-        identifiers_list->add_child(new Node(TS.Lexem));
-        SCN();
-        identifiers_list->add_child(variable_identifier());
-        SCN();
-    }
-    return identifiers_list;
 }
 
 Node *Parser::variable_identifier(){
@@ -225,16 +217,7 @@ Node *Parser::variable_identifier(){
     return variable_identifier_node;
 }
 
-Node *Parser::attributes_list(){
-    Node *attributes_list = new Node ("<attributes-list>");
-    while(TS.code == tables.Delimiters.get(",")){
-        attributes_list->add_child(new Node(TS.Lexem));
-        SCN();
-        attributes_list->add_child(attribute());
-        SCN();
-    }
-    return attributes_list;
-}
+
 
 Node *Parser::attribute(){
     Node* attribute_node = new Node ("<attribute>");
