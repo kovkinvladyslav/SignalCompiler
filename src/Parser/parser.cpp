@@ -173,13 +173,7 @@ Node *Parser::declarations_list(){
 
 Node *Parser::declaration(){
     Node *declaration_node = new Node ("<declaration>");
-    declaration_node->add_child(variable_identifier());
-    SCN();
-    while(TS.code == tables.Delimiters.get(",")){
-        SCN();
-        declaration_node->add_child(variable_identifier());
-        SCN();
-    }
+    declaration_node->add_child(identifiers_list());
     if(TS.code != tables.Delimiters.get(":")){
         errorLogger.logError("Parser", TS.nline, TS.ncol, "Expected ':' between variables identifiers and attributes");
         declaration_node->add_child(new Node("<error>"));
@@ -187,13 +181,7 @@ Node *Parser::declaration(){
     } else {
         declaration_node->add_child(new Node(TS.Lexem));
     }
-    SCN();
-    declaration_node->add_child(attribute());
-    SCN();
-    while(TS.code != tables.Delimiters.get(";")){
-        declaration_node->add_child(attribute());
-        SCN();
-    }
+   declaration_node->add_child(attributes_list());
     if(TS.code != tables.Delimiters.get(";")){
         errorLogger.logError("Parser", TS.nline, TS.ncol, "Expected ';' in the end of declaration");
         declaration_node->add_child(new Node("<error>"));
@@ -202,6 +190,30 @@ Node *Parser::declaration(){
         declaration_node->add_child(new Node (TS.Lexem));
     }
     return declaration_node;
+}
+
+Node *Parser::identifiers_list(){
+    Node *identifiers_list_node = new Node("<identifiers-list>");
+    identifiers_list_node->add_child(variable_identifier());
+    SCN();
+    while(TS.code == tables.Delimiters.get(",")){
+        SCN();
+        identifiers_list_node->add_child(variable_identifier());
+        SCN();
+    }
+    return identifiers_list_node;
+}
+
+Node *Parser::attributes_list(){
+    Node *attributes_list_node = new Node("<attributes-list>");
+    SCN();
+    attributes_list_node->add_child(attribute());
+    SCN();
+    while(TS.code != tables.Delimiters.get(";")){
+        attributes_list_node->add_child(attribute());
+        SCN();
+    }
+    return attributes_list_node;
 }
 
 Node *Parser::variable_identifier(){
