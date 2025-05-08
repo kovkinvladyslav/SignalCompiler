@@ -46,6 +46,7 @@ void Generator::generate_procedure(Node* node){
         procedure_names.insert(proc_identifier);
     }
     emit("; Start of Procedure declaration: " + proc_identifier);
+    emit(proc_identifier + ":");
     auto parameters = node->get_children()[2];
     generate_parameters_list(parameters);
     emit("; End of Procedure declaration: " + proc_identifier);
@@ -56,20 +57,32 @@ void Generator::generate_parameters_list(Node *node){
         return;
     }
     emit("; Start of parameters list");
-    std::vector<std::string> variables;
-    std::vector<std::string> types;
+    auto declaration_list = node->get_children()[1];
 
-    generate_declarations_list(node->get_children()[1]);
+
+    generate_declarations_list(declaration_list);
 
 }
 
 
 void Generator::generate_declarations_list(Node *node){
-    if(node->get_value() == "<empty>"){
+    if(node->get_value() == "<empty>" || node->get_children()[0]->get_value() == "<empty>"){
         return;
     }
     emit("; Start of declarations");
-    //todo
+    for(auto declaration : node->get_children()){
+        std::vector<std::string> variables;
+        std::vector<std::string> type;
+        auto vars_nodes = declaration->get_children()[0];
+        auto type_nodes = declaration->get_children()[2];
+        for(auto var_node : vars_nodes->get_children()){
+            variables.push_back(var_node->get_children()[0]->get_children()[0]->get_value());
+        }
+        for(auto type_node : type_nodes->get_children()){
+            type.push_back(type_node->get_children()[0]->get_children()[0]->get_value());
+        }
+        
+    }
 }
 
 void Generator::emit(const std::string& line){
