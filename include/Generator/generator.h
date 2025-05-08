@@ -15,7 +15,7 @@ class Generator{
     void generate_declarations(Node *node);
     void generate_procedure(Node *node);
     void generate_parameters_list(Node *node);
-    void generate_parameters_list(Node *node);
+    void generate_declarations_list(Node *node);
 
     std::set<std::string> procedure_names;
     LexemString &scan_result;
