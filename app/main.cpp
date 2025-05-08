@@ -20,8 +20,8 @@ int main(int argc, char** argv){
     // if (testFile.find('/') == std::string::npos) {
     //     testFile = testPath + testFile;
     // }
-    std::string testFile = "../../tests/trueTest1.txt";
-
+    std::string testFile = "../../tests/trueTest2.txt";
+    
     Tables LexTable;
     Attributes attributes;
     Lexer lexer(LexTable, attributes);
@@ -35,7 +35,6 @@ int main(int argc, char** argv){
     Generator gen(scan_result);
     gen.generate_code(generated_Tree);
     gen.output_listing();
+    gen.write_listing("../../output.txt");
     errorLogger.printErrors();
-    
-
 }
