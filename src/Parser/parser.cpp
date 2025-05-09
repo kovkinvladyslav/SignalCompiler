@@ -30,6 +30,7 @@ Node* Parser::program(){
     if(TS.code != tables.Keywords.get("PROGRAM")){
         errorLogger.logError("Parser", TS.nline, TS.ncol, "Program should start with 'PROGRAM' keyword");
         program->add_child(new Node("<error>"));
+        return program;
     } else {
         program->add_child(new Node(TS.Lexem));
     }
@@ -38,6 +39,7 @@ Node* Parser::program(){
     if(program->get_children().size() == 0){
         errorLogger.logError("Parser", TS.nline, TS.ncol, "Expected program identifier");
         program->add_child(new Node("<error>"));
+        return program;
     }
     SCN();
     if(TS.code != tables.Delimiters.get(";")){
@@ -54,8 +56,10 @@ Node* Parser::program(){
     if(TS.code != tables.Delimiters.get(";")){
         errorLogger.logError("Parser", TS.nline, TS.ncol, "Expected ';' after the block");
         program->add_child(new Node("<error>"));
+        return program;
     } else {
         program->add_child(new Node(TS.Lexem));
+        return program;
     }
     return program;
 }
@@ -85,6 +89,7 @@ Node *Parser::block(){
     if(TS.code != tables.Keywords.get("END")){
         errorLogger.logError("Parser", TS.nline, TS.ncol, "Expected 'END' keyword");
         block->add_child(new Node("<error>"));
+        return block;
     } else {
         block->add_child(new Node(TS.Lexem));
     }
@@ -129,6 +134,7 @@ Node *Parser::procedure(){
     if(TS.code != tables.Delimiters.get(";")){
         errorLogger.logError("Parser", TS.nline, TS.ncol, "Expected ending ';' after procedure declaration");
         procedure_node->add_child(new Node("<error>"));
+        return procedure_node;
     } else {
         procedure_node->add_child(new Node(";"));
     }
@@ -148,6 +154,7 @@ Node *Parser::parameters_list(){
     if(TS.code != tables.Delimiters.get(")")){
         errorLogger.logError("Parser", TS.nline, TS.ncol, "Expected '(' after parameters list");
         parameters_list_node->add_child(new Node("<error>"));
+        return parameters_list_node;
     } else {
         parameters_list_node->add_child(new Node(TS.Lexem));
     }
@@ -250,6 +257,7 @@ Node *Parser::procedure_identifier(){
     if(identifier_node == nullptr){
         errorLogger.logError("Parser", TS.nline, TS.ncol, "Procedure identifier is explected to be an identifier");
         procedure_identifier->add_child(new Node("<error>"));
+        return procedure_identifier;
     } else {
         procedure_identifier->add_child(identifier_node);
     }
