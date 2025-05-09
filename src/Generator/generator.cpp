@@ -44,7 +44,7 @@ void Generator::generate_procedure(Node* node){
     std::string proc_identifier = node->get_children()[1]->get_children()[0]->get_children()[0]->get_value();
     if(procedure_names.find(proc_identifier) != procedure_names.end()){
         Lexem proc_id_lex = scan_result.find(proc_identifier);
-        errorLogger.logError("Generator", proc_id_lex.nline, proc_id_lex.ncol, "redefenitions of a procedures are not allowed ! (can't give two procedures same name)");
+        errorLogger.logError("Generator", proc_id_lex.nline, proc_id_lex.ncol, "redefenitions of procedures are not allowed ! (can't give two procedures same name)");
         return;
     } else {
         procedure_names.insert(proc_identifier);
@@ -53,6 +53,7 @@ void Generator::generate_procedure(Node* node){
     emit(proc_identifier + ":");
     auto parameters = node->get_children()[2];
     generate_parameters_list(parameters);
+    emit("RET");
     emit("; End of Procedure declaration: " + proc_identifier);
 }
 
@@ -100,8 +101,14 @@ void Generator::generate_declarations_list(Node *node) {
         std::string baseType;
         bool isComplex = false;
         bool isSignal = false;
-
+        std::set<std::string> seenAttrs;
         for (const auto& attr : typeAttrs) {
+            if(seenAttrs.find(attr) != seenAttrs.end()){
+                Lexem error_var = scan_result.find(variables[0]);
+                errorLogger.logError("Generator : Warning", error_var.nline, error_var.ncol, "repeating types");
+            } else {
+                seenAttrs.insert(attr);
+            }
             if (std::find(baseTypes.begin(), baseTypes.end(), attr) != baseTypes.end()) {
                 if (!baseType.empty()) {
                     Lexem error_var = scan_result.find(variables[0]);
@@ -128,56 +135,53 @@ void Generator::generate_declarations_list(Node *node) {
     }
 }
 
-
-void Generator::generate_variable(std::string& var_name, std::string& baseType, bool isComplex, bool isSignal){
-    if (baseType == "INTEGER") {
-        if (isComplex) {
-            generate_integer(var_name + "_RE");
-            generate_integer(var_name + "_IM");
-        } else {
-            generate_integer(var_name);
-        }
-    } else if (baseType == "FLOAT") {
-        if (isComplex) {
-            generate_float(var_name + "_RE");
-            generate_float(var_name + "_IM");
-        } else {
-            generate_float(var_name);
-        }
-    } else if (baseType == "BLOCKFLOAT") {
-        if (isComplex) {
-            generate_blockfloat(var_name + "_RE");
-            generate_blockfloat(var_name + "_IM");
-        } else {
-            generate_blockfloat(var_name);
+void Generator::generate_variable(std::string& var_name, std::string& baseType, bool isComplex, bool isSignal) {
+    std::vector<std::string> suffixes;
+    
+    if (!isComplex) {
+        suffixes.push_back(""); 
+    } else {
+        suffixes = {"_RE", "_IM"}; 
+    }
+    
+    for (const auto& suffix : suffixes) {
+        std::string name = var_name + suffix;
+        
+        if (baseType == "INTEGER") {
+            generate_integer(name);
+            if (isSignal) {
+                generate_signal(name);
+            }
+        } else if (baseType == "FLOAT") {
+            generate_float(name);
+            if (isSignal) {
+                generate_signal(name + "_MANT");
+                generate_signal(name + "_EXP");
+            }
+        } else if (baseType == "BLOCKFLOAT") {
+            generate_blockfloat(name);
         }
     }
-
-    if (isSignal) {
-        generate_signal(var_name);
-    }
-
 }
 
-
-void Generator::generate_integer(std::string var_name){
+void Generator::generate_integer(std::string var_name) {
     emit("POP [VAR_" + var_name + "]");
 }
 
-void Generator::generate_float(std::string var_name){
+void Generator::generate_float(std::string var_name) {
     emit("POP [VAR_" + var_name + "_MANT]");
     emit("POP [VAR_" + var_name + "_EXP]");
 }
 
-void Generator::generate_blockfloat(std::string var_name){
+void Generator::generate_blockfloat(std::string var_name) {
     generate_integer(var_name + "_COMMON_EXP");
-    for(int i = 0; i < 5; i++){
+    for(int i = 0; i < 5; i++) {
         generate_integer(var_name + "_MANT_" + std::to_string(i));
     }
 }
 
-void Generator::generate_signal(std::string var_name){
-    emit("LINK [" + var_name + "]");
+void Generator::generate_signal(std::string var_name) {
+    emit("LINK [VAR_" + var_name + "]");
 }
 
 void Generator::emit(const std::string& line){
@@ -185,6 +189,7 @@ void Generator::emit(const std::string& line){
 }
 
 void Generator::output_listing(){
+    std::cout << "Generated code:\n";
     std::cout << listing.str();
 }
 
