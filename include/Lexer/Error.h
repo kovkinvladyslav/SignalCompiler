@@ -17,12 +17,16 @@ struct ErrorEntry {
 class ErrorLogger {
 private:
     std::vector<ErrorEntry> errors;
+    std::vector<ErrorEntry> warnings;
+
 public:
     void logError(const std::string& module, int line, int column, const std::string& message);
 
     void printErrors() const;
 
     bool hasErrors() const;
+
+    void logWarning(const std::string& module, int line, int column, const std::string& message);
 
     void clear();
 };

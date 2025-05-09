@@ -34,5 +34,5 @@ class Generator{
     void generate_code(Tree *parser_tree);
     void output_listing();
     void write_listing(std::string filename);
-
+    
 };
