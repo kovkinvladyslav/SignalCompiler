@@ -6,6 +6,10 @@ void ErrorLogger::logError(const std::string& module, int line, int column, cons
     errors.emplace_back(module, line, column, message);
 }
 
+void ErrorLogger::logWarning(const std::string& module, int line, int column, const std::string& message) {
+    warnings.emplace_back(module, line, column, message);
+}
+
 void ErrorLogger::printErrors() const {
     if (errors.empty()) {
         std::cout << "No errors found.\n";
