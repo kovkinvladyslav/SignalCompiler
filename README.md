@@ -1,4 +1,4 @@
-# Semantic Analyzer
+# Signal Compiler
 
 A three-stage compiler for a custom signal processing language. The system performs lexical analysis, syntactic parsing, and code generation for programs written in a domain-specific language supporting signal types, complex numbers, and procedural declarations.
 
