@@ -13,12 +13,12 @@
 
 int main() {
     std::vector<std::string> testFiles = {
-        "../../tests/trueTest1.txt",
-        "../../tests/trueTest2.txt",
-        "../../tests/falseTest1.txt",
-        "../../tests/falseTest2.txt",
-        "../../tests/falseTest3.txt",
-        "../../tests/falseTest4.txt"
+        "../tests/trueTest1.txt",
+        "../tests/trueTest2.txt",
+        "../tests/falseTest1.txt",
+        "../tests/falseTest2.txt",
+        "../tests/falseTest3.txt",
+        "../tests/falseTest4.txt"
     };
 
     while (true) {
