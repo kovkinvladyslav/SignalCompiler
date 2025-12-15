@@ -1,3 +1,4 @@
+```
 1. <signal-program> --> <program>
 2. <program> --> PROGRAM <procedure-identifier> ; <block> ;
 3. <block> --> <declarations> BEGIN <statements-list> END
@@ -17,3 +18,4 @@
 17. <string> --> <letter><string> | <digit><string> | <empty>
 18. <digit> --> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 19. <letter> --> A | B | C | D | ... | Z
+```
